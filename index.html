@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nife AI - Eat Smarter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== RESET & BASE STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #303030;
+            background: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ===== LAYOUT CONTAINER ===== */
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .screen {
+            display: none;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* ===== TYPOGRAPHY ===== */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1E2A38;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1E2A38;
+            margin-bottom: 1.5rem;
+            line-height: 1.3;
+        }
+
+        h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1E2A38;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            font-size: 1rem;
+            color: #303030;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-size: 1.125rem;
+            color: #303030;
+            margin-bottom: 2rem;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            display: inline-block;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            text-decoration: none;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4BE38C, #3fd478);
+            color: #1E2A38;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #3fd478, #35c26a);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(75, 227, 140, 0.3);
+        }
+
+        .btn-secondary {
+            background: #F9FAFB;
+            color: #303030;
+            border: 2px solid #7A8CA4;
+        }
+
+        .btn-secondary:hover {
+            background: #F1F5F9;
+            border-color: #4BE38C;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #1E2A38;
+            border: 2px solid #7A8CA4;
+        }
+
+        .btn-outline:hover {
+            background: #F9FAFB;
+            border-color: #4BE38C;
+        }
+
+        /* ===== PROGRESS BAR ===== */
+        .progress-container {
+            position: sticky;
+            top: 0;
+            background: #ffffff;
+            padding: 20px;
+            margin: -20px -20px 30px -20px;
+            z-index: 100;
+            border-bottom: 1px solid #F1F5F9;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #F1F5F9;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4BE38C, #3fd478);
+            transition: width 0.4s ease;
+            border-radius: 3px;
+        }
+
+        .progress-text {
+            font-size: 0.875rem;
+            color: #303030;
+            text-align: center;
+        }
+
+        /* ===== FORM STYLES ===== */
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-step {
+            display: none;
+            min-height: 300px;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: #1E2A38;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: #ffffff;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #4BE38C;
+            box-shadow: 0 0 0 3px rgba(75, 227, 140, 0.1);
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        /* ===== PILL TOGGLE BUTTONS ===== */
+        .pill-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .pill-item {
+            position: relative;
+        }
+
+        .pill-input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .pill-label {
+            display: block;
+            padding: 12px 20px;
+            background: #F9FAFB;
+            border: 2px solid #E5E7EB;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #303030;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .pill-input:checked + .pill-label {
+            background: #4BE38C;
+            border-color: #4BE38C;
+            color: #1E2A38;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(75, 227, 140, 0.3);
+        }
+
+        .pill-label:hover {
+            border-color: #4BE38C;
+            background: #f0fdf4;
+        }
+
+        /* ===== CHECKBOX STYLES ===== */
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .checkbox-item {
+            position: relative;
+        }
+
+        .checkbox-input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .checkbox-label {
+            display: block;
+            padding: 12px 18px;
+            background: #F9FAFB;
+            border: 2px solid #E5E7EB;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #303030;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-input:checked + .checkbox-label {
+            background: #4BE38C;
+            border-color: #4BE38C;
+            color: #1E2A38;
+        }
+
+        .checkbox-label:hover {
+            border-color: #4BE38C;
+            background: #f0fdf4;
+        }
+
+        /* ===== NOTICE BOXES ===== */
+        .notice {
+            background: #F0F9FF;
+            border: 1px solid #0EA5E9;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 16px 0;
+            font-size: 0.875rem;
+            color: #0369A1;
+        }
+
+        .consent-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-top: 16px;
+            padding: 16px;
+            background: #F9FAFB;
+            border-radius: 12px;
+        }
+
+        .consent-checkbox input[type="checkbox"] {
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .consent-checkbox label {
+            font-size: 0.875rem;
+            color: #303030;
+            line-height: 1.5;
+        }
+
+        /* ===== NAVIGATION ===== */
+        .form-navigation {
+            position: sticky;
+            bottom: 0;
+            background: #ffffff;
+            padding: 20px;
+            margin: 30px -20px -20px -20px;
+            border-top: 1px solid #F1F5F9;
+            display: flex;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 16px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .hero-content {
+            margin-bottom: 40px;
+        }
+
+        .feature-preview {
+            background: #F9FAFB;
+            border: 2px solid #E5E7EB;
+            border-radius: 20px;
+            padding: 24px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .feature-preview h4 {
+            color: #1E2A38;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 6px 0;
+            color: #303030;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feature-list li::before {
+            content: "✓";
+            color: #4BE38C;
+            font-weight: bold;
+        }
+
+        /* ===== STEPS SECTION ===== */
+        .steps-section {
+            margin: 40px 0;
+        }
+
+        .step {
+            padding: 24px 0;
+            border-left: 4px solid #4BE38C;
+            padding-left: 24px;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .step::before {
+            content: counter(step-counter);
+            counter-increment: step-counter;
+            position: absolute;
+            left: -12px;
+            top: 24px;
+            background: #4BE38C;
+            color: #1E2A38;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .steps-section {
+            counter-reset: step-counter;
+        }
+
+        /* ===== SUCCESS SCREEN ===== */
+        .success-container {
+            text-align: center;
+            padding: 60px 0;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 24px;
+        }
+
+        .success-message {
+            margin-bottom: 40px;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* ===== PLAN PREVIEW ===== */
+        .plan-preview {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .plan-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #F0F9FF;
+            border-radius: 12px;
+        }
+
+        .meal-section {
+            margin-bottom: 30px;
+        }
+
+        .meal-section h3 {
+            font-size: 1.2rem;
+            color: #1E2A38;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #F1F5F9;
+        }
+
+        .meal-item {
+            background: #F9FAFB;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .meal-name {
+            font-weight: 600;
+            color: #1E2A38;
+            margin-bottom: 12px;
+        }
+
+        .macros {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .macro {
+            background: #ffffff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-align: center;
+            flex: 1;
+            border: 1px solid #E5E7EB;
+        }
+
+        .macro-value {
+            font-weight: 600;
+            color: #1E2A38;
+            display: block;
+        }
+
+        .macro-label {
+            font-size: 0.75rem;
+            color: #303030;
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 480px) {
+            .app-container {
+                max-width: 100%;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .hero {
+                padding: 20px 0;
+            }
+
+            .pill-group {
+                justify-content: center;
+            }
+
+            .checkbox-group {
+                justify-content: center;
+            }
+
+            .input-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== UTILITY CLASSES ===== */
+        .text-center { text-align: center; }
+        .text-small { font-size: 0.875rem; }
+        .mb-0 { margin-bottom: 0; }
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 1.5rem; }
+        .mt-2 { margin-top: 1rem; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Landing Page -->
+        <div id="landing" class="screen active">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1>Eat Smarter</h1>
+                    <p class="subtitle">Fuel your fitness with zero planning.</p>
+                    <button class="btn btn-primary" onclick="startOnboarding()">Build My Plan</button>
+                </div>
+
+                <div class="feature-preview">
+                    <h4>📱 Your personalized plan includes:</h4>
+                    <ul class="feature-list">
+                        <li>Breakfast, lunch, dinner & snack options</li>
+                        <li>Exact macros for your goals</li>
+                        <li>Cooking, pickup, or delivery suggestions</li>
+                        <li>24/7 text coaching support</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="steps-section">
+                <h2>How it Works</h2>
+                <div class="step">
+                    <h3>Tell us about yourself</h3>
+                    <p>Goals, routine, food preferences</p>
+                </div>
+                <div class="step">
+                    <h3>Get your personalized plan</h3>
+                    <p>Delivered in seconds. Cook, pick up, or get it delivered.</p>
+                </div>
+                <div class="step">
+                    <h3>Stay on track effortlessly</h3>
+                    <p>Don't like a meal? Text us for different ideas.</p>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="startOnboarding()">Get Started</button>
+        </div>
+
+        <!-- Onboarding Flow -->
+        <div id="onboarding" class="screen">
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">Step 1 of 7</div>
+            </div>
+
+            <!-- Step 1: Name -->
+            <div class="form-step active" data-step="1">
+                <h2>What's your first name?</h2>
+                <div class="form-group">
+                    <input type="text" id="firstName" class="form-input" placeholder="Enter your first name" required>
+                </div>
+            </div>
+
+            <!-- Step 2: Contact Info -->
+            <div class="form-step" data-step="2">
+                <h2>How can we reach you?</h2>
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="email" class="form-input" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" id="phone" class="form-input" placeholder="(555) 123-4567" required>
+                    <div class="notice">
+                        We'll text you your plan — no spam, ever.
+                    </div>
+                    <div class="consent-checkbox">
+                        <input type="checkbox" id="smsConsent" required>
+                        <label for="smsConsent">I agree to receive text messages from Nife AI about my personalized meal plan and related updates. Message and data rates may apply. I can opt out at any time.</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Goal -->
+            <div class="form-step" data-step="3">
+                <h2>What's your main health goal?</h2>
+                <div class="pill-group">
+                    <div class="pill-item">
+                        <input type="radio" name="goal" value="lose-fat" id="goal-lose-fat" class="pill-input">
+                        <label for="goal-lose-fat" class="pill-label">Lose body fat</label>
+                    </div>
+                    <div class="pill-item">
+                        <input type="radio" name="goal" value="build-muscle" id="goal-build-muscle" class="pill-input">
+                        <label for="goal-build-muscle" class="pill-label">Build lean muscle</label>
+                    </div>
+                    <div class="pill-item">
+                        <input type="radio" name="goal" value="maintain" id="goal-maintain" class="pill-input">
+                        <label for="goal-maintain" class="pill-label">Maintain weight</label>
+                    </div>
+                    <div class="pill-item">
+                        <input type="radio" name="goal" value="not-sure" id="goal-not-sure" class="pill-input">
+                        <label for="goal-not-sure" class="pill-label">Just eat smarter</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Workout Frequency -->
+            <div class="form-step" data-step="4">
+                <h2>How often do you work out?</h2>
+                <div class="pill-group">
+                    <div class="pill-item">
+                        <input type="radio" name="workout" value="5-plus" id="workout-5-plus" class="pill-input">
+                        <label for="workout-5-plus" class="pill-label">5+ days/week</label>
+                    </div>
+                    <div class="pill-item">
+                        <input type="radio" name="workout" value="3-4" id="workout-3-4" class="pill-input">
+                        <label for="workout-3-4" class="pill-label">3-4 days/week</label>
+                    </div>
+                    <div class="pill-item">
+                        <input type="radio" name="workout" value="1-2" id="workout-1-2" class="pill-input">
+                        <label for="workout-1-2" class="pill-label">1-2 days/week</label>
+                    </div>
+                    <div class="pill-item">
+                        <input type="radio" name="workout" value="rarely" id="workout-rarely" class="pill-input">
+                        <label for="workout-rarely" class="pill-label">Rarely/never</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: Body Stats -->
+            <div class="form-step" data-step="5">
+                <h2>Tell us about your body</h2>
+                <div class="form-group">
+                    <label class="form-label">Gender</label>
+                    <div class="pill-group">
+                        <div class="pill-item">
+                            <input type="radio" name="gender" value="male" id="gender-male" class="pill-input">
+                            <label for="gender-male" class="pill-label">Male</label>
+                        </div>
+                        <div class="pill-item">
+                            <input type="radio" name="gender" value="female" id="gender-female" class="pill-input">
+                            <label for="gender-female" class="pill-label">Female</label>
+                        </div>
+                        <div class="pill-item">
+                            <input type="radio" name="gender" value="non-binary" id="gender-non-binary" class="pill-input">
+                            <label for="gender-non-binary" class="pill-label">Non-binary</label>
+                        </div>
+                        <div class="pill-item">
+                            <input type="radio" name="gender" value="prefer-not-to-say" id="gender-prefer-not-to-say" class="pill-input">
+                            <label for="gender-prefer-not-to-say" class="pill-label">Prefer not to say</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label class="form-label">Age</label>
+                        <input type="number" id="age" class="form-input" placeholder="25" min="13" max="100" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Weight (lbs)</label>
+                        <input type="number" id="weight" class="form-input" placeholder="150" min="80" max="500" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Height</label>
+                    <div class="input-group">
+                        <input type="number" id="heightFeet" class="form-input" placeholder="5" min="4" max="7" required>
+                        <span>ft</span>
+                        <input type="number" id="heightInches" class="form-input" placeholder="8" min="0" max="11" required>
+                        <span>in</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 6: Preferences -->
+            <div class="form-step" data-step="6">
+                <h2>Food & lifestyle preferences</h2>
+                <div class="form-group">
+                    <label class="form-label">Dietary preferences (select all that apply)</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="dietary" value="vegetarian" id="dietary-vegetarian" class="checkbox-input">
+                            <label for="dietary-vegetarian" class="checkbox-label">Vegetarian</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="dietary" value="vegan" id="dietary-vegan" class="checkbox-input">
+                            <label for="dietary-vegan" class="checkbox-label">Vegan</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="dietary" value="dairy-free" id="dietary-dairy-free" class="checkbox-input">
+                            <label for="dietary-dairy-free" class="checkbox-label">Dairy-free</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="dietary" value="gluten-free" id="dietary-gluten-free" class="checkbox-input">
+                            <label for="dietary-gluten-free" class="checkbox-label">Gluten-free</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="dietary" value="low-carb" id="dietary-low-carb" class="checkbox-input">
+                            <label for="dietary-low-carb" class="checkbox-label">Low-carb</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="dietary" value="no-red-meat" id="dietary-no-red-meat" class="checkbox-input">
+                            <label for="dietary-no-red-meat" class="checkbox-label">No red meat</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">How do you prefer to eat?</label>
+                    <div class="pill-group">
+                        <div class="pill-item">
+                            <input type="radio" name="eating-style" value="cook" id="eating-style-cook" class="pill-input">
+                            <label for="eating-style-cook" class="pill-label">I like to cook</label>
+                        </div>
+                        <div class="pill-item">
+                            <input type="radio" name="eating-style" value="takeout" id="eating-style-takeout" class="pill-input">
+                            <label for="eating-style-takeout" class="pill-label">Prefer takeout</label>
+                        </div>
+                        <div class="pill-item">
+                            <input type="radio" name="eating-style" value="mix" id="eating-style-mix" class="pill-input">
+                            <label for="eating-style-mix" class="pill-label">Mix of both</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">How much time for meal prep?</label>
+                    <div class="pill-group">
+                        <div class="pill-item">
+                            <input type="radio" name="prep-time" value="less-10" id="prep-time-less-10" class="pill-input">
+                            <label for="prep-time-less-10" class="pill-label">< 10 mins</label>
+                        </div>
+                        <div class="pill-item">
+                            <input type="radio" name="prep-time" value="around-20" id="prep-time-around-20" class="pill-input">
+                            <label for="prep-time-around-20" class="pill-label">~20 mins</label>
+                        </div>
+                        <div class="pill-item">
+                            <input type="radio" name="prep-time" value="30-plus" id="prep-time-30-plus" class="pill-input">
+                            <label for="prep-time-30-plus" class="pill-label">30+ mins</label>
+                        </div>
+                        <div class="pill-item">
+                            <input type="radio" name="prep-time" value="varies" id="prep-time-varies" class="pill-input">
+                            <label for="prep-time-varies" class="pill-label">Varies</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 7: ZIP Code -->
+            <div class="form-step" data-step="7">
+                <h2>What's your ZIP code?</h2>
+                <div class="form-group">
+                    <input type="text" id="zipCode" class="form-input" placeholder="12345" pattern="[0-9]{5}" required>
+                    <div class="notice">
+                        Used to recommend takeout and grocery options near you.
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-navigation">
+                <button type="button" class="btn btn-outline nav-btn" id="prevBtn" onclick="prevStep()">Previous</button>
+                <button type="button" class="btn btn-primary nav-btn" id="nextBtn" onclick="nextStep()">Next</button>
+            </div>
+        </div>
+
+        <!-- Checkout Screen -->
+        <div id="checkout" class="screen">
+            <div class="hero">
+                <div class="success-icon">💳</div>
+                <h1>Your 7-Day Meal Plan Awaits</h1>
+                <p class="subtitle">Get your personalized 7-day meal plan and nutrition coaching delivered via text for just $9.</p>
+                
+                <div class="feature-preview">
+                    <h4>✨ What you'll get:</h4>
+                    <ul class="feature-list">
+                        <li>7-day personalized meal plan (breakfast, lunch, dinner, snacks)</li>
+                        <li>Exact macro breakdowns for your goals</li>
+                        <li>Shopping lists and prep instructions</li>
+                        <li>24/7 nutrition support with coach Ivy</li>
+                        <li>Unlimited meal swaps via text</li>
+                    </ul>
+                </div>
+
+                <button class="btn btn-primary" onclick="redirectToStripe()">Get Your Plan</button>
+                <p class="text-small text-center mt-2">Secure payment powered by Stripe</p>
+            </div>
+        </div>
+
+        <!-- Success Screen -->
+        <div id="success" class="screen">
+            <div class="success-container">
+                <div class="success-icon">🎉</div>
+                <div class="success-message">
+                    <h1>Welcome to Nife AI!</h1>
+                    <p class="subtitle">Your 7-day personalized meal plan is being created and will be texted to you within the next few minutes.</p>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="showPlanPreview()">View Your Plan Preview</button>
+                    <button class="btn btn-outline" onclick="startSMSCoaching()">Start SMS Coaching</button>
+                </div>
+                
+                <div class="notice mt-2">
+                    <strong>What's next?</strong> You'll receive a text from Ivy with your complete 7-day meal plan. Reply anytime to swap meals, ask questions, or get cooking tips!
+                </div>
+            </div>
+        </div>
+
+        <!-- Plan Preview Screen -->
+        <div id="plan-preview" class="screen">
+            <div class="plan-preview">
+                <div class="plan-header">
+                    <h1>Your 7-Day Meal Plan Preview</h1>
+                    <p>Here's a taste of what's coming to your phone!</p>
+                </div>
+
+                <div class="meal-section">
+                    <h3>🌅 Breakfast Options</h3>
+                    <div class="meal-item">
+                        <div class="meal-name">Greek Yogurt Power Bowl</div>
+                        <div class="macros">
+                            <div class="macro">
+                                <span class="macro-value">28g</span>
+                                <span class="macro-label">Protein</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">35g</span>
+                                <span class="macro-label">Carbs</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">12g</span>
+                                <span class="macro-label">Fat</span>
+                            </div>
+                        </div>
+                        <p class="text-small">Greek yogurt, granola, mixed berries, honey, almonds</p>
+                    </div>
+                </div>
+
+                <div class="meal-section">
+                    <h3>🥗 Lunch Options</h3>
+                    <div class="meal-item">
+                        <div class="meal-name">Chicken Power Bowl</div>
+                        <div class="macros">
+                            <div class="macro">
+                                <span class="macro-value">35g</span>
+                                <span class="macro-label">Protein</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">40g</span>
+                                <span class="macro-label">Carbs</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">15g</span>
+                                <span class="macro-label">Fat</span>
+                            </div>
+                        </div>
+                        <p class="text-small">Grilled chicken, quinoa, roasted vegetables, avocado</p>
+                    </div>
+                </div>
+
+                <div class="meal-section">
+                    <h3>🍽️ Dinner Options</h3>
+                    <div class="meal-item">
+                        <div class="meal-name">Salmon & Sweet Potato</div>
+                        <div class="macros">
+                            <div class="macro">
+                                <span class="macro-value">32g</span>
+                                <span class="macro-label">Protein</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">25g</span>
+                                <span class="macro-label">Carbs</span>
+                            </div>
+                            <div class="macro">
+                                <span class="macro-value">18g</span>
+                                <span class="macro-label">Fat</span>
+                            </div>
+                        </div>
+                        <p class="text-small">Baked salmon, roasted sweet potato, steamed broccoli</p>
+                    </div>
+                </div>
+
+                <div class="notice">
+                    <strong>This is just a preview!</strong> Your complete personalized 7-day plan with multiple options for each meal is being texted to you now.
+                </div>
+
+                <button class="btn btn-primary" onclick="goBackToSuccess()">Back to Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== APPLICATION STATE =====
+        let currentStep = 1;
+        const totalSteps = 7;
+        let formData = {};
+
+        // ===== SCREEN MANAGEMENT =====
+        function showScreen(screenId) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Show target screen
+            const targetScreen = document.getElementById(screenId);
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+            }
+        }
+
+        // ===== ONBOARDING FLOW =====
+        function startOnboarding() {
+            showScreen('onboarding');
+            
+            // Reset to first step
+            currentStep = 1;
+            
+            // Hide all form steps
+            document.querySelectorAll('.form-step').forEach(step => {
+                step.classList.remove('active');
+            });
+            
+            // Show first step
+            document.querySelector('.form-step[data-step="1"]').classList.add('active');
+            
+            updateProgress();
+            updateNavigation();
+        }
+
+        function nextStep() {
+            // Validate current step
+            if (!validateCurrentStep()) {
+                return;
+            }
+            
+            // Save current step data
+            saveCurrentStepData();
+            
+            if (currentStep < totalSteps) {
+                // Hide current step
+                document.querySelector(`.form-step[data-step="${currentStep}"]`).classList.remove('active');
+                
+                // Move to next step
+                currentStep++;
+                
+                // Show next step
+                document.querySelector(`.form-step[data-step="${currentStep}"]`).classList.add('active');
+                
+                updateProgress();
+                updateNavigation();
+            } else {
+                // Form complete, go to checkout
+                proceedToCheckout();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                // Hide current step
+                document.querySelector(`.form-step[data-step="${currentStep}"]`).classList.remove('active');
+                
+                // Move to previous step
+                currentStep--;
+                
+                // Show previous step
+                document.querySelector(`.form-step[data-step="${currentStep}"]`).classList.add('active');
+                
+                updateProgress();
+                updateNavigation();
+            }
+        }
+
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `Step ${currentStep} of ${totalSteps}`;
+        }
+
+        function updateNavigation() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            // Show/hide previous button
+            if (currentStep === 1) {
+                prevBtn.classList.add('hidden');
+            } else {
+                prevBtn.classList.remove('hidden');
+            }
+            
+            // Update next button text
+            if (currentStep === totalSteps) {
+                nextBtn.textContent = "Complete Setup →";
+            } else {
+                nextBtn.textContent = "Next";
+            }
+        }
+
+        // ===== FORM VALIDATION =====
+        function validateCurrentStep() {
+            const currentStepElement = document.querySelector(`.form-step[data-step="${currentStep}"]`);
+            
+            // Check required text inputs
+            const requiredInputs = currentStepElement.querySelectorAll('input[required]:not([type="radio"]):not([type="checkbox"])');
+            for (let input of requiredInputs) {
+                if (!input.value.trim()) {
+                    showValidationError('Please fill in all required fields.');
+                    input.focus();
+                    return false;
+                }
+            }
+            
+            // Check required radio buttons
+            const radioGroups = currentStepElement.querySelectorAll('input[type="radio"]');
+            const radioGroupNames = [...new Set(Array.from(radioGroups).map(radio => radio.name))];
+            
+            for (let groupName of radioGroupNames) {
+                const groupRadios = currentStepElement.querySelectorAll(`input[name="${groupName}"]`);
+                const isChecked = Array.from(groupRadios).some(radio => radio.checked);
+                if (!isChecked) {
+                    showValidationError('Please select an option before continuing.');
+                    return false;
+                }
+            }
+            
+            // Check required checkboxes (like SMS consent)
+            const requiredCheckboxes = currentStepElement.querySelectorAll('input[type="checkbox"][required]');
+            for (let checkbox of requiredCheckboxes) {
+                if (!checkbox.checked) {
+                    showValidationError('Please agree to the terms before continuing.');
+                    return false;
+                }
+            }
+            
+            // Step-specific validation
+            if (currentStep === 2) {
+                return validateContactInfo();
+            }
+            
+            return true;
+        }
+
+        function validateContactInfo() {
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            
+            // Basic email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showValidationError('Please enter a valid email address.');
+                document.getElementById('email').focus();
+                return false;
+            }
+            
+            // Basic phone validation
+            const phoneRegex = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+            if (!phoneRegex.test(phone.replace(/\D/g, ''))) {
+                showValidationError('Please enter a valid phone number.');
+                document.getElementById('phone').focus();
+                return false;
+            }
+            
+            return true;
+        }
+
+        function showValidationError(message) {
+            alert(message); // You can replace this with a more elegant toast notification
+        }
+
+        // ===== DATA MANAGEMENT =====
+        function saveCurrentStepData() {
+            const currentStepElement = document.querySelector(`.form-step[data-step="${currentStep}"]`);
+            
+            // Save text inputs
+            const textInputs = currentStepElement.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input[type="number"]');
+            textInputs.forEach(input => {
+                if (input.value.trim()) {
+                    formData[input.id] = input.value.trim();
+                }
+            });
+            
+            // Save radio buttons
+            const checkedRadios = currentStepElement.querySelectorAll('input[type="radio"]:checked');
+            checkedRadios.forEach(radio => {
+                formData[radio.name] = radio.value;
+            });
+            
+            // Save checkboxes
+            const checkboxGroups = currentStepElement.querySelectorAll('input[type="checkbox"]');
+            const checkboxGroupNames = [...new Set(Array.from(checkboxGroups).map(cb => cb.name))].filter(name => name);
+            
+            checkboxGroupNames.forEach(groupName => {
+                const checkedBoxes = currentStepElement.querySelectorAll(`input[name="${groupName}"]:checked`);
+                if (checkedBoxes.length > 0) {
+                    formData[groupName] = Array.from(checkedBoxes).map(cb => cb.value);
+                }
+            });
+            
+            // Save individual checkboxes (like consent)
+            const individualCheckboxes = currentStepElement.querySelectorAll('input[type="checkbox"]:not([name])');
+            individualCheckboxes.forEach(checkbox => {
+                formData[checkbox.id] = checkbox.checked;
+            });
+        }
+
+        // ===== CHECKOUT FLOW =====
+        function proceedToCheckout() {
+            // Save final step data
+            saveCurrentStepData();
+            
+            // Show checkout screen
+            showScreen('checkout');
+            
+            console.log('Form data collected:', formData);
+        }
+
+        function redirectToStripe() {
+            // Replace with your actual Stripe Checkout URL
+            const stripeCheckoutUrl = 'https://buy.stripe.com/8x23cn0HkafN5f38BM5Vu01';
+            
+            // In production, you'd also send the form data to your backend here
+            // For now, we'll store it in localStorage as a backup
+            localStorage.setItem('nifeFormData', JSON.stringify(formData));
+            
+            // Redirect to Stripe Checkout
+            window.location.href = stripeCheckoutUrl;
+        }
+
+        // ===== SUCCESS FLOW =====
+        function showPlanPreview() {
+            showScreen('plan-preview');
+        }
+
+        function startSMSCoaching() {
+            alert('Your 7-day SMS coaching will begin shortly! You\'ll receive a text from Ivy with your meal plan.');
+        }
+
+        function goBackToSuccess() {
+            showScreen('success');
+        }
+
+        // ===== URL HANDLING =====
+        function handleURLParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Check if redirected from Stripe success
+            if (urlParams.get('success') === 'true') {
+                showScreen('success');
+            }
+            
+            // Check if redirected from Stripe cancellation
+            if (urlParams.get('canceled') === 'true') {
+                showScreen('landing');
+                alert('Payment was canceled. You can try again anytime!');
+            }
+        }
+
+        // ===== INITIALIZATION =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle URL parameters
+            handleURLParams();
+            
+            // Initialize the first form step as active
+            const firstStep = document.querySelector('.form-step[data-step="1"]');
+            if (firstStep) {
+                firstStep.classList.add('active');
+            }
+            
+            // Hide all other steps initially
+            document.querySelectorAll('.form-step:not([data-step="1"])').forEach(step => {
+                step.classList.remove('active');
+            });
+            
+            // Initialize progress if on onboarding screen
+            if (document.getElementById('onboarding').classList.contains('active')) {
+                updateProgress();
+                updateNavigation();
+            }
+            
+            // Auto-format phone number input
+            const phoneInput = document.getElementById('phone');
+            if (phoneInput) {
+                phoneInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value.length >= 6) {
+                        value = `(${value.slice(0,3)}) ${value.slice(3,6)}-${value.slice(6,10)}`;
+                    } else if (value.length >= 3) {
+                        value = `(${value.slice(0,3)}) ${value.slice(3)}`;
+                    }
+                    e.target.value = value;
+                });
+            }
+            
+            // Auto-format ZIP code input
+            const zipInput = document.getElementById('zipCode');
+            if (zipInput) {
+                zipInput.addEventListener('input', function(e) {
+                    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 5);
+                });
+            }
+        });
+
+        // ===== KEYBOARD NAVIGATION =====
+        document.addEventListener('keydown', function(e) {
+            // Allow Enter to proceed to next step in onboarding
+            if (e.key === 'Enter' && document.getElementById('onboarding').classList.contains('active')) {
+                e.preventDefault();
+                nextStep();
+            }
+            
+            // Allow Escape to go back
+            if (e.key === 'Escape' && currentStep > 1 && document.getElementById('onboarding').classList.contains('active')) {
+                e.preventDefault();
+                prevStep();
+            }
+        });
+    </script>
+</body>
+</html>
